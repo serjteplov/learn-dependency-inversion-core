@@ -1,32 +1,45 @@
 package ru.serj.learn.core.service;
 
-import ru.serj.learn.core.model.CreateOrderContext;
-import ru.serj.learn.core.model.Order;
-
-import java.util.List;
+import ru.serj.learn.core.api.CreateOrderRequest;
+import ru.serj.learn.core.api.Order;
+import ru.serj.learn.core.repo.OrderRepository;
+import ru.serj.learn.core.repo.ProductRepository;
+import ru.serj.learn.core.repo.UserRepository;
 import java.util.UUID;
 
 public class OrderService {
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final CreateOrderObserver observer;
 
-    private final List<CreateOrderObserver> observerList;
-
-    public OrderService(List<CreateOrderObserver> observerList) {
-        this.observerList = observerList;
+    public OrderService(UserRepository userRepository,
+                        ProductRepository productRepository,
+                        OrderRepository orderRepository,
+                        CreateOrderObserver observer) {
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
+        this.observer = observer;
     }
 
-    public void create(CreateOrderContext context) {
-        observerList.forEach(a -> a.onStart(context));
+    public void create(CreateOrderRequest request) {
+        try {
+            observer.onStart();
 
-        var user = context.getUser();
-        var product = context.getProduct();
+            var user = userRepository.find(request.getUserId());
+            var product = productRepository.find(request.getProductId());
 
-        if (user.getBalance() < product.getPrice()) {
-            throw new RuntimeException("Недостаточно средств");
+            if (user.getBalance() < product.getPrice()) {
+                throw new RuntimeException("Недостаточно средств");
+            }
+
+            Order order = new Order(UUID.randomUUID(), user.getId(), product.getId());
+            orderRepository.create(order);
+
+            observer.onEnd();
+        } finally {
+            observer.onFinally();
         }
-
-        Order order = new Order(UUID.randomUUID(), user.getId(), product.getId());
-        context.setOrder(order);
-
-        observerList.forEach(a -> a.onEnd(context));
     }
 }

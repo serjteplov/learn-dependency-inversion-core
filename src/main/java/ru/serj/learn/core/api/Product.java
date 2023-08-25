@@ -1,4 +1,4 @@
-package ru.serj.learn.core.model;
+package ru.serj.learn.core.api;
 
 import java.util.UUID;
 
@@ -6,6 +6,12 @@ public class Product {
     private UUID id;
     private String title;
     private int price;
+
+    public Product(UUID id, String title, int price) {
+        this.id = id;
+        this.title = title;
+        this.price = price;
+    }
 
     public UUID getId() {
         return id;

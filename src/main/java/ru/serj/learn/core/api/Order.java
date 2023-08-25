@@ -1,4 +1,4 @@
-package ru.serj.learn.core.model;
+package ru.serj.learn.core.api;
 
 import java.util.UUID;
 

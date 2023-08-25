@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ru.serj.learn"
-version = "1.2"
+version = "1.3"
 
 repositories {
     mavenLocal()

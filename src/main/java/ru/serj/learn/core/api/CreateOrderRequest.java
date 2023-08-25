@@ -1,4 +1,4 @@
-package ru.serj.learn.core.model;
+package ru.serj.learn.core.api;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -6,6 +6,11 @@ import java.util.UUID;
 public class CreateOrderRequest {
     private UUID userId;
     private UUID productId;
+
+    public CreateOrderRequest(UUID userId, UUID productId) {
+        this.userId = userId;
+        this.productId = productId;
+    }
 
     public UUID getUserId() {
         return userId;
