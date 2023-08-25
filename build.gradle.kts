@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ru.serj.learn"
-version = "1.3"
+version = "1.4"
 
 repositories {
     mavenLocal()
@@ -19,6 +19,7 @@ dependencies {
 
 tasks {
     publishToMavenLocal {
+        dependsOn(clean)
         dependsOn(build)
         dependsOn(shadowJar)
     }
